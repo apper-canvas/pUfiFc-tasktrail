@@ -1,16 +1,42 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { Sun, Moon } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useSelector, useDispatch } from 'react-redux';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
+import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import { initializeApperClient } from './services/apperService';
+import { setUser } from './store/userSlice';
 
 function App() {
+  const dispatch = useDispatch();
+  const { isAuthenticated } = useSelector((state) => state.user);
+  
   const [darkMode, setDarkMode] = useState(() => {
     const savedMode = localStorage.getItem('darkMode');
     return savedMode ? JSON.parse(savedMode) : 
       window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
+
+  useEffect(() => {
+    // Initialize Apper client
+    initializeApperClient();
+    
+    // Check if user data exists in localStorage
+    const storedUser = localStorage.getItem('apperUser');
+    if (storedUser) {
+      try {
+        const userData = JSON.parse(storedUser);
+        dispatch(setUser(userData));
+      } catch (error) {
+        console.error('Failed to parse stored user data:', error);
+        localStorage.removeItem('apperUser');
+      }
+    }
+  }, [dispatch]);
 
   useEffect(() => {
     if (darkMode) {
@@ -52,7 +78,10 @@ function App() {
 
       <main className="container mx-auto px-4 py-6">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Home />} />
+          <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
+          <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Register />} />
+          <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

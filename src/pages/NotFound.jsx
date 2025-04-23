@@ -1,45 +1,32 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
+import { Home } from 'lucide-react';
 
 const NotFound = () => {
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4"
-    >
+    <div className="max-w-md mx-auto text-center py-12">
       <motion.div
-        initial={{ scale: 0.9 }}
-        animate={{ scale: 1 }}
-        transition={{ 
-          type: "spring",
-          stiffness: 260,
-          damping: 20
-        }}
-        className="mb-8 text-9xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
       >
-        404
+        <h1 className="text-6xl font-bold mb-4">404</h1>
+        <h2 className="text-2xl font-medium mb-6">Page Not Found</h2>
+        <p className="text-surface-600 dark:text-surface-400 mb-8">
+          The page you are looking for doesn't exist or has been moved.
+        </p>
+        <Link to="/">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="px-6 py-3 rounded-lg bg-primary text-white font-medium hover:bg-primary-dark transition-colors inline-flex items-center"
+          >
+            <Home size={18} className="mr-2" />
+            Return Home
+          </motion.button>
+        </Link>
       </motion.div>
-      
-      <h1 className="text-3xl font-bold mb-4">Page Not Found</h1>
-      
-      <p className="text-surface-600 dark:text-surface-400 max-w-md mb-8">
-        The page you're looking for doesn't exist or has been moved.
-        Let's get you back on track.
-      </p>
-      
-      <Link to="/">
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="btn btn-primary flex items-center gap-2"
-        >
-          <ArrowLeft size={18} />
-          Back to Home
-        </motion.button>
-      </Link>
-    </motion.div>
+    </div>
   );
 };
 
